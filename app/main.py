@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import os
 import openai
 from dotenv import load_dotenv
+from pydantic.main import BaseModel
 
 from app import gen_test_code
 
@@ -14,11 +15,13 @@ openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
+class Input(BaseModel):
+    data: str
 
 
 @app.post("/gen-doc")
 def gen_docs(
-        input_text: str
+        input_text: Input
 ):
     text = """
 I'm create an API documentation website, and I'd like you to help me with one of the pages that API documentation
@@ -36,8 +39,7 @@ Here's an example api code you can refer to:
 
 
     """
-    text += input_text
-
+    text += input_text.data
 
     response = openai.ChatCompletion.create(
         # engine="text-davinci-003",
