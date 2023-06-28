@@ -19,7 +19,7 @@ class Input(BaseModel):
     data: str
 
 
-@app.post("/gen-doc")
+@app.post("/gpt/gen-doc")
 def gen_docs(
         input_text: Input
 ):
