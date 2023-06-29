@@ -4,20 +4,19 @@ import openai
 from dotenv import load_dotenv
 from pydantic.main import BaseModel
 
-from app import gen_test_code
+from app import gen_init
 
 app = FastAPI()
-app.include_router(gen_test_code.router)
+app.include_router(gen_init.router)
 
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 openai.organization = os.getenv("OPENAI_API_ORGANIZATION")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
 class Input(BaseModel):
     data: str
-
 
 @app.post("/gpt/gen-doc")
 def gen_docs(
@@ -40,7 +39,6 @@ Here's an example api code you can refer to:
 
     """
     text += input_text.data
-
     response = openai.ChatCompletion.create(
         # engine="text-davinci-003",
         # model="gpt-4",
@@ -60,3 +58,6 @@ Here's an example api code you can refer to:
     output_text = response['choices'][0]['message']['content']
     print(output_text)
     return output_text
+
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0")
