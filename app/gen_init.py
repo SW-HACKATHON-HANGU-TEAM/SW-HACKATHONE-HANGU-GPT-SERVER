@@ -1,11 +1,16 @@
 import openai
 from fastapi import APIRouter
+from pydantic import BaseModel
+class Input(BaseModel):
+    project_name: str
+    developer_type: str
 
 router = APIRouter()
-@router.post("/gen-init")
+@router.post("/gpt/gen-init")
 def gen_init(
-        project_name: str,
-        developer_type: str
+    input_text: Input
+    # project_name: str,
+    # developer_type: str
 ):
     text = """
 Given the name of a development project, I would like to help you design the process of developing that project. and I want the design to fit the project name and project developer. 
@@ -18,7 +23,7 @@ Here's what I'd like help writing:
  (3) mermaid code mindmap in graph LR format for  development process description
  (4) Development process description
 
-Divided with '(splitPoint)' mark above the number so that each number item can be seen separately.
+Divided with '(splitPoint)' mark above the number so that each number item can be seen separately. and put 'mermaid' in front of the code
 
 2. PLEASE provide the response content in the "Markdown" format, so I can copy and paste it directly. Keep this constraint in mind while writing. Don't use html.
 3. Regardless of the language I use, I need the content written in Korean.
@@ -28,7 +33,7 @@ Divided with '(splitPoint)' mark above the number so that each number item can b
 
 Here's an example project name and developer type you can refer to:
     """
-    text += project_name + ',' + developer_type
+    text += input_text.project_name + ',' + input_text.developer_type
 
     response = openai.ChatCompletion.create(
         # engine="text-davinci-003",
@@ -48,4 +53,4 @@ Here's an example project name and developer type you can refer to:
     print("==============")
     output_text = response['choices'][0]['message']['content']
     print(output_text)
-    return output_text
+    return {"output_text":output_text}
