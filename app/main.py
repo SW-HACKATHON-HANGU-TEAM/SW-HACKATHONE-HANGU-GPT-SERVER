@@ -48,7 +48,7 @@ Here's an example api code you can refer to:
         model="gpt-3.5-turbo",
         # model='text-davinci-003',
         # prompt=text,
-        messages=[{"role": "user", "content": str(text)}],
+        messages=[{"role": "system", "content": str(text)}],
         # max_tokens=4000,
         # top_p=1,
         # n=1,
@@ -63,5 +63,54 @@ Here's an example api code you can refer to:
     return output_text
 
 
+<<<<<<< HEAD
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0")
+=======
+@app.post("/gpt/gen_testcode")
+def gen_testcode(gen_text: str):
+
+    print("========================")
+    print(gen_text)
+
+
+    text = """
+You are Java Backend Developer manager
+I'm trying to write a Java unit test code. You make the test code.
+I will use java language
+
+1. Use JUnit5
+2. Make the method name snake case
+3. Comment your test code using the @Display annotation
+4. Write comments in Korean using the @Display annotation.
+5. Create meticulous test code for all edge cases 
+6. Please don't say anything other than test code
+
+Here's an example api code you can refer to:
+
+    """
+    text += gen_text
+
+    response = openai.ChatCompletion.create(
+        # engine="text-davinci-003",
+        # model="gpt-4",
+        model="gpt-3.5-turbo",
+        # model='text-davinci-003',
+        # prompt=text,
+        messages=[{"role": "system", "content": str(text)}],
+        # max_tokens=4000,
+        # top_p=1,
+        # n=1,
+        stop=None,
+        # temperature=0.5,
+        # stop=["\n"]
+    )
+    # print(response.choices[0].text)
+    print("==============")
+    output_text = response['choices'][0]['message']['content']
+    print(output_text)
+
+    return {
+        "text_code": text
+    }
+>>>>>>> bd43e604ad78df1224986147dda10ede75a19e56
